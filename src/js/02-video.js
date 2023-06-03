@@ -36,6 +36,11 @@ player.getVideoTitle().then(function (title) {
   console.log('title:', title);
 });
 
+player.on('pause', function () {
+  const currentTime = player.getCurrentTime();
+  saveCurrentTime(currentTime);
+});
+
 loadSavedTime();
 
 window.addEventListener('beforeunload', function () {
