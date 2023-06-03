@@ -5,14 +5,16 @@ const iframe = document.querySelector('iframe');
 const player = new VimeoPlayer(iframe);
 
 function saveCurrentTime(currentTime) {
-  localStorage.setItem('videoplayer-current-time', currentTime.toString());
+  const url = new URL(window.location.href);
+  url.searchParams.set('time', currentTime.toString());
+  history.replaceState(null, null, url);
 }
 
 function loadSavedTime() {
-  const savedTime = localStorage.getItem('videoplayer-current-time');
-  if (savedTime !== null) {
-    const startTime = parseFloat(savedTime);
-    player.setCurrentTime(startTime);
+  const url = new URL(window.location.href);
+  const currentTime = parseFloat(url.searchParams.get('time'));
+  if (!isNaN(currentTime)) {
+    player.setCurrentTime(currentTime);
   }
 }
 
@@ -34,11 +36,6 @@ player.on('play', function () {
 
 player.getVideoTitle().then(function (title) {
   console.log('title:', title);
-});
-
-player.on('pause', function () {
-  const currentTime = player.getCurrentTime();
-  saveCurrentTime(currentTime);
 });
 
 loadSavedTime();
